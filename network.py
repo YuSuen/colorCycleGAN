@@ -133,3 +133,4 @@ class VGG(nn.Module):
                 outs.append(x)
         return outs
 
+

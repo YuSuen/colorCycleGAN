@@ -40,27 +40,6 @@ def print_network(net):
     print(net)
     print('Total number of parameters: %d' % num_params)
 
-
-# def gradient_penalty(disc, real_data, generated_data):
-#
-#     batch_size = real_data.size(0)
-#     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-#     epsilon = torch.rand(batch_size, 1, device=device, requires_grad=True)
-#     epsilon_exp = epsilon.expand(batch_size, real_data.nelement() / batch_size).contiguous().view(real_data.size())
-#
-#     interpolates = epsilon_exp * real_data + (1 - epsilon_exp) * generated_data
-#
-#     disc_interpolates = disc(interpolates)
-#
-#     gradients = autograd.grad(outputs=disc_interpolates.mean(),
-#                               inputs=interpolates,
-#                               create_graph=True, retain_graph=True
-#                               )[0]
-#
-#     gradients = gradients.view(gradients.size(0), -1)
-#
-#     return ((gradients.norm(2, dim=1) - 1) ** 2).mean()
-
 class ReplayBuffer():
     def __init__(self, max_size=50):
         assert (max_size > 0), 'Empty buffer or trying to create a black hole. Be careful.'

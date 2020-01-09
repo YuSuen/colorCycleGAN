@@ -116,12 +116,9 @@ for epoch in range(args.train_epoch):
     epoch_start_time = time.time()
     G_losses = []
     G_identity_losses = []
-    Pix_identity_losses = []
     G_GAN_losses = []
     G_cycle_losses = []
-    Pix_cycle_losses = []
     G_Color_losses = []
-    G_Seg_losses = []
     D_losses = []
 
     for (x, _), (y, _)in zip(train_loader_src, train_loader_tgt):
@@ -201,7 +198,7 @@ for epoch in range(args.train_epoch):
 
         ###################################
         # Total loss
-        loss_G = loss_GAN_A2B + loss_GAN_B2A + loss_cycle_ABA + loss_cycle_BAB +color_loss_B2A + color_loss_A2B
+        loss_G = loss_GAN_A2B + loss_GAN_B2A + loss_cycle_ABA + loss_cycle_BAB + color_loss_B2A + color_loss_A2B + loss_identity_A + loss_identity_B
         loss_G.backward()
 
         G_losses.append(loss_G.item())
@@ -262,30 +259,18 @@ for epoch in range(args.train_epoch):
     train_hist['per_epoch_time'].append(per_epoch_time)
 
     print(
-        '[%d/%d] - time: %.2f, G_loss: %.3f,G_GAN_loss: %.3f, G_cycle_loss: %.3f, G_color_loss: %.3f, D_loss: %.3f' % (
-        (epoch + 1), args.train_epoch, per_epoch_time, torch.mean(torch.FloatTensor(G_losses)),
-        torch.mean(torch.FloatTensor(G_GAN_losses)), torch.mean(torch.FloatTensor(G_cycle_losses)),
-        torch.mean(torch.FloatTensor(G_Color_losses)), torch.mean(torch.FloatTensor(D_losses))))
+        '[%d/%d] - time: %.2f, G_loss: %.3f, G_identity_loss: %.3f, G_GAN_loss: %.3f, G_cycle_loss: %.3f, D_loss: %.3f' % (
+        (epoch + 1), args.train_epoch, per_epoch_time, torch.mean(torch.FloatTensor(G_losses)), torch.mean(torch.FloatTensor(G_identity_losses)),
+        torch.mean(torch.FloatTensor(G_GAN_losses)), torch.mean(torch.FloatTensor(G_cycle_losses)), torch.mean(torch.FloatTensor(D_losses))))
 
     with torch.no_grad():
         A2BG.eval()
-        for n, (x, _) in enumerate(train_loader_src):
-            x = x.to(device)
-            G_recon = A2BG(x)
-            result = torch.cat((x[0], G_recon[0]), 2)
-            path = os.path.join(args.name + '_results', 'Colorization', str(epoch+1) + '_epoch_' + args.name + '_train_' + str(n + 1) + '.png')
-            plt.imsave(path, (result.cpu().numpy().transpose(1, 2, 0) + 1) / 2)
-            if n == 4:
-                break
-
         for n, (x, _) in enumerate(test_loader_src):
             x = x.to(device)
             G_recon = A2BG(x)
             result = torch.cat((x[0], G_recon[0]), 2)
-            path = os.path.join(args.name + '_results', 'Colorization', str(epoch+1) + '_epoch_' + args.name + '_test_' + str(n + 1) + '.png')
+            path = os.path.join(args.name + '_results', 'Colorization', str(epoch+1) + '_epoch_' + args.name + '_test_' + str(n) + '.png')
             plt.imsave(path, (result.cpu().numpy().transpose(1, 2, 0) + 1) / 2)
-            if n == 4:
-                break
 
     lr_scheduler_G.step()
     lr_scheduler_D_A.step()
