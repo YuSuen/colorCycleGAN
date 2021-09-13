@@ -1,7 +1,7 @@
 # colorCycleGAN-PyTorch
 This is the code (in PyTorch) for our paper [Single Image Colorization via Modified CycleGAN](https://ieeexplore.ieee.org/document/8803677)，accepted in *ICIP 2019*, which allows using unpaired images for training and reasonably predict corresponding color distribute of grayscale image in RGB color space.
 
-Note: The pkl-weight in the dir ```/checkpoints``` corrupted during the upload. I’m sorry I didn’t check it in time after uploading. I will update if I have time.
+Note: The pkl-weight in the dir ```/checkpoints``` corrupted during the upload. I’m sorry I didn’t check it in time after uploading. 
 ## Prerequisites
 Linux
 
